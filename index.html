@@ -1,1 +1,569 @@
-<!DOCTYPE html><html><head><meta charset='utf-8'><title>CR Vierfy</title><style>body,html{margin:0;height:100%;background:#000} img{width:100%;height:100%;object-fit:contain}</style></head><body><img src="CapturSe.JPG"></body></html>
+
+
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Certificate Form B, Certificate No: VN-IQ 25/02/002784B</title>
+    
+    <link href="./Certificate Form B, Certificate No_ VN-IQ 25_02_002784B_files/styleprint.css" rel="stylesheet">
+
+    <script type="text/javascript" src="./Certificate Form B, Certificate No_ VN-IQ 25_02_002784B_files/jquery-1.10.2.min.js.تنزيل">
+    </script>
+    <script type="text/javascript">
+        function getURLParameter(name) {
+            return decodeURI(
+                (RegExp(name + '=' + '(.+?)(&|$)').exec(location.search) || [, null])[1]
+            );
+        };
+
+    </script>
+
+    <script type="text/javascript">
+        $(function () {
+            var docId = parseInt(getURLParameter('DocId'));
+            var companyTaxCode = getURLParameter('CompanyTaxCode');
+            var certificateNumber = getURLParameter('CertificateNumber');
+            var certificateDate = getURLParameter('CertificateDate');
+            var key = getURLParameter('Key');
+            var gobackUrl = getURLParameter('Goback');
+            $.ajax({
+                url: '/jsx/certificate/getinfoformVCCIB/data.jsx',
+                type: 'GET',
+                contentType: 'application/json; charset=utf-8',
+                dataType: 'json',
+                data: { DocId: docId, CertificateNumber: certificateNumber, Key: key }
+            }).success(function (response) {
+                if (response.message == 0) {
+                    cdata = response.data;
+                    var review = cdata.placeReview.toUpperCase() + ", " + cdata.reviewDate;
+                    var submit = cdata.placeSend.toUpperCase() + ", " + cdata.submitDate;
+                    var departmentInfoReview = cdata.departmentInfoReview;
+
+                    $('#exportInfo').val(cdata.companyNameEnglish.toUpperCase() + '\r\n' + cdata.companyAddress.toUpperCase() + '\r\n' + 'VIET NAM');
+                    $('#importInfo').val(cdata.nameEnglishPersionImport.toUpperCase() + '\r\n' + cdata.addressPersionImport.toUpperCase() + '\r\n' + cdata.countryNameImport.toUpperCase());
+                    $('#coNumber').val(cdata.certificateNumber.toUpperCase());
+                    $('#importNational').val(cdata.countryNameImport.toUpperCase());
+                    //$('#tranportMethod01').val(cdata.receiverPlace.toUpperCase());??
+                        $('#tranportDepartureDate').val(cdata.transportDate.toUpperCase());
+                    $('#shipName02').val(cdata.shipName.toUpperCase());
+                    $('#portDischarge').val(cdata.receiverPlace.toUpperCase());
+                    $('#placedate').val(submit);
+                    $('#coll12').val(review);
+
+
+                    $('#certificateNumber').text(cdata.certificateNumber.toUpperCase());
+                    $('#companyNameEnglish').text(cdata.companyNameEnglish.toUpperCase());
+                    $('#companyAddress').text(cdata.companyAddress.toUpperCase());
+                    $('#companyPhone').text(cdata.companyPhone.toUpperCase());
+                    $('#countryExport').text(cdata.countryExport.toUpperCase());
+                    $('#nameEnglishPersionImport').text(cdata.nameEnglishPersionImport.toUpperCase());
+                    $('#addressPersionImport').text(cdata.addressPersionImport.toUpperCase());
+                    $('#phonePersionImport').text(cdata.phonePersionImport.toUpperCase());
+                    $('.countryName').text(cdata.countryNameImport.toUpperCase());
+                    $('#countryNameImport').text(cdata.countryNameImport.toUpperCase());
+                    $('#countryNameImport02').text(cdata.countryNameImport.toUpperCase());
+                    $('#shipName').text(cdata.shipName.toUpperCase());
+                    $('#transportDate').text(cdata.transportDate.toUpperCase());
+                    $('#receiverPlace').text(cdata.receiverPlace.toUpperCase());
+                    $('#senderPlace').text(cdata.senderPlace.toUpperCase());
+                    $('#transportMethod').text(cdata.tranportName.toUpperCase());
+                    $('#reviewInfo').text(review);
+                    //$('#departmentInfoReview').text(departmentInfoReview);
+
+
+                    $('#submitInfo').text(submit);
+
+                    $('#linkStamp').attr('src', cdata.linkStamp);
+                    $('#linkQRCode').attr('src', cdata.linkQRCode);
+
+                    //Option
+                    var optionItems = cdata.OptionItems;
+                    $.each(optionItems, function (idx, obj) {
+                        if (obj.optionSelected === 1) {
+                            var classname = obj.name.replace(/ /g, "-");
+                            $('.' + classname).attr('src', 'imagesChecked.png');
+                        }
+                    });
+                    var items = cdata.Items;
+                    //bind all item
+
+                    //bind dữ liệu item vào bảng
+                    for (var i = 0; i < items.length; i++) {
+                        if (i > 0) $('#clone').clone().appendTo('.draft');
+
+                        $('.borderTwo:nth-child(' + (i + 1) + ')').addClass('fixheight-' + (i + 1));
+                        if (i > 0) $('.borderTwo:nth-child(' + (i + 1) + ')').removeClass('fixheight-1');
+                        //Split ký tự liền nhau trên 20 ký tự
+                        var sChar = items[i].shippingMark.split(' ');
+                        var shippingMark = items[i].shippingMark;
+                        var spChar = '';
+                        var checkLenght = false;
+                        sChar.forEach(function (current_value, idx) {
+                            //console.log('Số ký tự: ' + current_value.length + ' Text: ' + current_value + ' Vị trí: ' + idx);
+                            if (current_value.length > 18) {
+                                current_value = current_value.substr(0, 18) + ' ' + current_value.substr(18);
+                                checkLenght = true;
+                                console.log(checkLenght);
+                            }
+                            spChar += current_value + ' ';
+                        });
+                        if (checkLenght) shippingMark = spChar;
+                        //console.log(shippingMark);
+                        $('.stt')[i].innerText = items[i].stt;
+                        $('.shippingMark')[i].innerHTML = shippingMark.toUpperCase();
+                        $('.numberAndPackageDecription')[i].innerHTML = items[i].numberAndPackageDecription.replace(/\s\s+/g, ' ').toUpperCase();
+                        //$('.originCriteria')[i].innerHTML = items[i].originCriteria.replace(';', '; ').toUpperCase();
+                        $('.grossAndQuantity')[i].innerHTML = items[i].grossAndQuantity.toUpperCase();
+                        $('.numberAndDateInvoice')[i].innerHTML = items[i].numberAndDateInvoice.toUpperCase();
+                        $('.tciValue')[i].innerHTML = items[i].tciValue.toUpperCase();
+
+                        ////$('#col06')[i].val(hippingMark.toUpperCase());
+                        ////$('#col07')[i].val(items[i].numberAndPackageDecription.replace(/\s\s+/g, ' ').toUpperCase() + '\r\n' + items[i].tciValue.toUpperCase());
+                        ////$('#col08')[i].val(items[i].originCriteria.replace(';', '; ').toUpperCase());
+                        ////$('#col09')[i].val(items[i].grossAndQuantity.toUpperCase());
+                        ////$('#col10')[i].val(items[i].numberAndDateInvoice.toUpperCase());
+                    }
+
+                    //Phần trang template
+                    $('.draft').css('display', 'block');
+                    //thêm items vào từng trang
+                    //var itemHeightFix = 270;
+                    var itemHeightTD = 340;
+                    var draftItems = $('.draftItem');
+                    var pageItemheight = 0;
+
+                    for (var p = 0; p < draftItems.length; p++) {
+                        var height = $('.draftItem')[p].children[0].offsetHeight;
+                        if (height > itemHeightTD) {
+                            $('#copy').clone().appendTo('.WordSection1');
+                        } else {
+                            pageItemheight = pageItemheight + height;
+                            if (pageItemheight > itemHeightTD) {
+                                p = p - 1;
+                                pageItemheight = 0;
+                                $('#copy').clone().appendTo('.WordSection1');
+                            }
+                        }
+                    }
+                    //đánh số trang
+                    var totalpage = $('.fixheight').length;
+                    for (var i = 0; i < totalpage; i++) {
+                        var pageCur = i + 1;
+                        var item = $('.fixheight')[i];
+                        item.classList.add('fixheight-' + pageCur);
+                        $('.pageCur')[i].innerText = pageCur;
+                        $('.totalpage')[i].innerText = totalpage;
+                    }
+
+                    var k = 0;
+                    var pagelastheight = 0;
+                    var rowlastheight = 0;
+                    var ssrowlast = 0;
+
+                    $('.Items').each(function (idx, obj) {
+                        var pItemheight = 0;
+                        for (k; k < draftItems.length; k++) {
+                            var height = $('.draftItem')[k].children[0].offsetHeight;
+                            rowlastheight = height;
+
+                            var ss = idx + 1;
+                            ssrowlast = ss;
+
+                            if (height > itemHeightTD) {
+                                $('.fixheight-' + ss)[0].children[0].offsetHeight = itemHeightTD;
+                                $('div.fixheight-' + ss + ' tr#clone.borderTwo.draftItem.fixheight-' + (k + 1) + ' .col01Height').height(itemHeightTD);
+
+                                pItemheight = itemHeightTD;
+                                $(this).before($('.draftItem')[k].outerHTML);
+                            } else {
+                                var pItemheightBak = pItemheight;
+                                pItemheight = pItemheight + height;
+                                pagelastheight = pItemheight;
+
+                                if (pItemheight >= itemHeightTD) {
+
+                                    var heightConLai = itemHeightTD - pItemheightBak;
+                                    var height = $('.draftItem')[k - 1].children[0].offsetHeight;
+                                    $('div.fixheight-' + ss + ' tr#clone.borderTwo.draftItem.fixheight-' + (k) + ' .col01Height').height(height + heightConLai);
+
+                                    break;
+                                } else {
+                                    $('div.fixheight-' + ss + ' tr#clone.borderTwo.draftItem.fixheight-' + (k + 1) + ' .col01Height').height(height);
+
+                                    $(this).before($('.draftItem')[k].outerHTML);
+                                }
+                            }
+
+                        }
+
+                    });
+
+                    //Set height last row
+                    if (pagelastheight < itemHeightTD) {
+
+                        $('div.fixheight-' + ssrowlast + ' tr#clone.borderTwo.draftItem.fixheight-' + (draftItems.length) + ' .col01Height').height(rowlastheight + itemHeightTD - pagelastheight);
+                    }
+
+                    $('.draft').css('display', 'none');
+
+                    //set title
+                    var strTitle = 'Certificate ' + cdata.formName + ', Certificate No: ' + cdata.certificateNumber;
+                    $('title').text(strTitle);
+                    //fixheight
+                    var bodyHeight = $('.WordSection1').height();
+                    if (bodyHeight > 1075) {
+                        var fixbodyHeight = Math.ceil(bodyHeight / 1060);
+                        $('.WordSection1').css('height', fixbodyHeight * 1060);
+                    }
+
+                    //print
+                    
+                } else { //not login
+                    alert(response.note);
+                }
+            });
+
+        });
+    </script>
+
+    <style type="text/css">
+        body {
+            line-height: 12pt;
+            font-family: 'Times New Roman';
+            font-size: 14pt
+        }
+
+        p {
+            margin: 0pt
+        }
+
+        table {
+            margin-top: 0pt;
+            margin-bottom: 0pt
+        }
+
+        .BalloonText {
+            line-height: normal;
+            font-family: Tahoma;
+            font-size: 8pt;
+            -aw-style-name: balloon-text
+        }
+
+        .ListParagraph {
+            margin-left: 36pt;
+            line-height: 12pt;
+            font-size: 14pt;
+            -aw-style-name: list-paragraph
+        }
+
+        span.BalloonTextChar {
+            font-family: Tahoma;
+            font-size: 8pt
+        }
+
+        .TableGrid {
+        }
+    </style>
+<style id="custom-cursor" type="text/css">body button, body [type='button'], body input[type='reset'], body input[type='submit'], body [role="button"], ::-webkit-search-cancel-button, ::-webkit-search-decoration, ::-webkit-scrollbar-button, ::-webkit-file-upload-button, [role^=button], .cc_pointer, [type="search"]::-webkit-search-cancel-button, a, select, [type="search"]::-webkit-search-decoration, .paper-button, .ytp-progress-bar-container, input[type=submit], :link, :visited, a > *, img,  ::-webkit-scrollbar-button, .ogdlpmhglpejoiomcodnpjnfgcpmgale_pointer, ::-webkit-file-upload-button, .ytp-volume-panel, #myogdlpmhglpejoiomcodnpjnfgcpmgale .icon, body .custom-cursor-on-hover {cursor: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAACFNJREFUWEfFl3tQ1NcVxz932WV5LYhAfACBKIkPMmB00GgSNaEh1hcmPOIDNIlJa9Vo0hqtHcZp4h9VY2qiyUQdLZ0qplok4tgENRAVYqJSBEVlEQRE3s9dYF/s7u38lmCqqbZmtD0zu3/s/u49n3PvOd9zfoL7aFLKEOB5k8n0dEVFxeONjY3BPT09njqdrjskJKQ6IiKiUK1WHwdyhRC9imuhfEkpBwCBQoiKe+WRUvoDCy5fvpySk5MTc/LkSdW5CyWorTaGarR4qtwwOOzU9VoZMNCf5yZPITExsSk2NjZFCPGVkFK+mJWVlVFWVua5ePHiI4MGDYoXQjj/E4iU8imj0fiL7OzspAMHDnieKypiqocvccKTqSoPwoUaVV98LrNIySmNk6MOE591N3NVr8/w8fFJEcXFxVdXrlwZUVNTw4wZM/j444/XAtuEED23Q0gpRwNzCgsLUzIzM0dlHvqcQIudeWpf5qu8CRKqO3NLSYPWHSWyJ1ovceb0t8eHDRsWJwoKCurWr18/tLy8HCmdTJw4iWnTppnHjBlzITg4uFaj0dhbWlqC9Hr96MLCwiG5Xx3nWmUlP/fwZ4HKh2dUWn7k1mIFrTsE+IOHB3R3Q1snTVoNKo2GmNYrZB7OvhgTExMlLl26VLxixYpo5QQcTjXewQsxt52kp+MiKmlFCIHDqULr8zAeA2JwD3qG3Q1fEmOuvjVamw2iR0PcFJg6ER4dBhr1D8/0mGg9XQi5BUw78CfWf7KtYfr06UNFbW3t0UWLFsXV1dVhtdqImvkdHeZAurolGprAaUbn40Nnj4YA315+vxQ639jE9K5z4HCAzhsSpkNKIoQrRXBna2vvxOFw8OqrrzBv7su2lJQUT2E2m/fEx8enKADdXR0sTSug0RBK4WU1G9408+YfjCx7GcqqIP88+HjCooufkjK0Fha8CLPjwN39Vq92O1RUQ1kFdBjAzQ1ChtAZEY7JU8vaVb9h/PjxLFu2LEipgi3x8fFvKVdg6GjCf+yXON1H4eamZUiAjeaWdhACKUElwE0F859Xs/yVgFudmi2Q8zX8PRe+/Qd094BW61rrWux00oWkKzqSTeZmBj45jnXr1o1SANakpqZuuHLlCm2tjQRG7yFi5JOU1XiidrMjHK0gBV6eYLLAlneg6LIHb6b69QHoK+Evf4PsY2Cx9RHewbpVKowaNbus7bTEPcW2bdumKACvvf3227tPnz5Nc3MTk2dtZPzEmez43JuPVjnZnN7MiHDBmJHwUQb46yDqEcEfR5yBz7LhfOmPr8BqBW8veCQUAga6oqehGfP1Oto1ag46ujkXM5I9e/YkKwCz161bl52bm0tDQwNeYe+gCUpBCh1B/hJzTxMOh8DaC2o30GogtKWCfVd/DWrtD7HaeiEiDKbHwgtTYMTwvrv/F7N199CSW0DeZ/vJ6KwnJydnqQIQ88EHH5w9fPgw169fxzt0CWMmLUFf64eiKw5rsyLVBPhBZxf8Kgkayzr43Z8Xgup7gFk/g9REGBN51yqwOxw0NrZQWnqB365ZTXFx8bsKQHh6enrV3r17qaysZMDDyWzasJZVW/z5ZSLU1LZSrHew4S14492+Kui12PmmdQUieQ7MnQN+ultP4kwRFJzry4/6JlCuZIAvMiyE+nFRNDwaypzkRG7cuPGpAuBz8OBB486dO4Ver2fS088z4YUNFJf709QOBkMHvb29rtMcFgJRj8GUJyQTxg52idRNK7rYlxNKJfSYbxWh/oekpN5dg0nAk+1l6C9czHTtkJOTY9yyZYtOARg7dhzbd+wkKHCg0idpa+vEarWi0YBTCpf2OJ2SIYODcFMk9+AXsO/zvmhv1wPXDmBD4oZALXHJsRPB2NZLnDhxIt8FcPbs2WtpaWmPVFRUEOznT9bWTwl8OsbF3WkwYjKZ+2JQqVw1Lc+X8tDxfDRf5oHd0ff799YhJUeliQKnlQsOM9esJqzfAwSp3Xncw4eJai8+NDaw72BmmQugvLz8zJIlS8YrSejhcJKnDSXQ3w/xxON0BQ+mS6ltYxdU1cLlq0ibjQCnxEMRGHB1uDynhb3Obo5aDYwaMZLnnn2W6OjolvDw8Gs6na7dYrF4NzQ0hJaWloblfZ2nOvPdGXbt2tXsAmhqasqeP3/+7Pr6eixmM9/ohvOQ1YZSRD0qgUE5/9vMr9eO0+Egw9lNut1Ip5eWuUlJJCQknI+KisoAjggh9Levk1I+BMRXVVUlhYSEfOECsNvtu2fOnPma0g8MXV3MdR/AW/gwBIFFCNrcNa7RQvkod1niMHPEZuSQuYPhIx5jYWqqJSEh4a86ne4TIUThXWvxtj/7R7INCQkJa6qqqmhtbSUyMpKiCyVM0OoYpdLi7aZ23WONs5ezFiNOHy9mvjCNl156qXry5Mm7gJ1CiJZ7cdz/bD/Aytdff/3DkpISlxpmZmYaAgICivPz8ydWVla6G41GvL29CQsLc0ZGRlZOmDDhmFarzQJO/Dfj293A+gEWrF69eu+pU6eUfGDTpk3G5ORkPymlFzAcUAZPI1AjhOj4KZHeaU0/QNx777139NixYyh5kJaWJhcvXqz7d3Ph/XSu7NUPELV169aSrKwsqqurWb58OatWrQoXQtTcb4e379cPMDQjI6MuPT0dRYySkpJ4//33Y+41o38KbD+A+6FDh0zbt293KysrIzY2lt27d88SQhz5KZvey5qb3SQvL69l48aNgUo/UOa1/fv3K28uiqA8ULsJYDAY9i1cuHBeUVERmzdvtiYnJ48SQlQ9UO/9Sag4Udqy3W5fazKZwnx9fXcIIfIftPObVfC/cHRXHfh/AvwT51G40emRMicAAAAASUVORK5CYII=") 2 3, pointer !important;} html,body,body select,body .custom-cursor-default-hover {cursor: url("data:image/png;base64,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") 1 1, auto !important;}</style></head>
+<body style="">
+    <table class="draft" style="display: none;">
+        <tbody><tr class="borderTwo draftItem fixheight-1" id="clone" style="mso-yfti-irow: 5; page-break-inside: avoid;  border-bottom: none; ">
+            <td colspan="2" style="width: 341.9pt; border-style: solid; border-top: none; border-bottom: none; border-left: solid windowtext 1pt; border-right: solid windowtext 1pt; border-width: 0.75pt; padding-right: 5.03pt; padding-left: 5.03pt; vertical-align: top; -aw-border: 0.5pt single">
+                <p class="MsoNormal col01Height" style="overflow: hidden; margin-top: 3.0pt; margin-right: 1.8pt; margin-bottom: 0in; margin-left: 0in; margin-bottom: 6pt; line-height: 120%; mso-pagination: widow-orphan">
+                    <span style="font-size: 7.0pt; mso-bidi-font-size: 10.0pt; line-height: 120%; font-family: monospace; mso-ansi-language: EN-US; mso-bidi-font-weight: bold" class="stt">1</span>.
+                    <span style="font-size: 7.0pt; mso-bidi-font-size: 10.0pt; line-height: 120%; font-family: monospace; mso-ansi-language: EN-US; mso-bidi-font-weight: bold" class="shippingMark">CG C/NO.: 1 -840 MADE IN VIET NAM TO MSH ORDER NO.: CG-2501/1</span>
+                    <br>
+                    <span style="font-size: 7.0pt; mso-bidi-font-size: 10.0pt; line-height: 120%; font-family: monospace; mso-ansi-language: EN-US; mso-bidi-font-weight: bold" class="numberAndPackageDecription">CAR/ TRUCK TUBES<br>HS CODE: 40131029<br>465 PACKAGE</span>
+                    <br>
+                    <span style="font-size: 7.0pt; mso-bidi-font-size: 10.0pt; line-height: 120%; font-family: monospace; mso-ansi-language: EN-US; mso-bidi-font-weight: bold" class="tciValue"></span>
+                </p>
+            </td>
+            <td style="width: 84pt; border-style: solid; border-top: none; border-bottom: none; border-left: solid windowtext 1pt; border-right: solid windowtext 1pt; border-width: 0.75pt; padding-right: 5.03pt; padding-left: 5.03pt; vertical-align: top; -aw-border: 0.5pt single">
+                <p class="MsoNormal" style="margin-top: 3.0pt; margin-right: 0in; margin-bottom: 3.0pt; margin-left: 0in; line-height: 120%; mso-pagination: widow-orphan">
+                    <span lang="EN-AU" style="font-size: 7.0pt; line-height: 120%; font-family: monospace; mso-bidi-font-weight: bold" class="grossAndQuantity">11,400.50 KILOGRAM<br>7,800.00 PIECE<br> </span>
+                </p>
+            </td>
+            <td style="width: 84.05pt; border-style: solid; border-top: none; border-bottom: none; border-left: solid windowtext 1pt; border-right: solid windowtext 1pt; border-width: 0.75pt; padding-right: 5.03pt; padding-left: 5.03pt; vertical-align: top; -aw-border: 0.5pt single">
+                <p class="MsoNormal" style="margin-top: 3.0pt; margin-right: 1.8pt; margin-bottom: 3.0pt; margin-left: 0in; line-height: 120%; mso-pagination: widow-orphan">
+                    <span class="numberAndDateInvoice" style="font-size: 7.0pt; line-height: 120%; font-family: monospace; mso-ansi-language: EN-US; mso-bidi-font-weight: bold">SF-250605<br>DATE: 5/06/2025</span>
+                </p>
+            </td>
+
+        </tr>
+
+    <tr class="borderTwo draftItem fixheight-2" id="clone" style="mso-yfti-irow: 5; page-break-inside: avoid;  border-bottom: none; ">
+            <td colspan="2" style="width: 341.9pt; border-style: solid; border-top: none; border-bottom: none; border-left: solid windowtext 1pt; border-right: solid windowtext 1pt; border-width: 0.75pt; padding-right: 5.03pt; padding-left: 5.03pt; vertical-align: top; -aw-border: 0.5pt single">
+                <p class="MsoNormal col01Height" style="overflow: hidden; margin-top: 3.0pt; margin-right: 1.8pt; margin-bottom: 0in; margin-left: 0in; margin-bottom: 6pt; line-height: 120%; mso-pagination: widow-orphan">
+                    <span style="font-size: 7.0pt; mso-bidi-font-size: 10.0pt; line-height: 120%; font-family: monospace; mso-ansi-language: EN-US; mso-bidi-font-weight: bold" class="stt">2</span>.
+                    <span style="font-size: 7.0pt; mso-bidi-font-size: 10.0pt; line-height: 120%; font-family: monospace; mso-ansi-language: EN-US; mso-bidi-font-weight: bold" class="shippingMark">CG C/NO.: 1 -840 MADE IN VIET NAM TO MSH ORDER NO.: CG-2501/1</span>
+                    <br>
+                    <span style="font-size: 7.0pt; mso-bidi-font-size: 10.0pt; line-height: 120%; font-family: monospace; mso-ansi-language: EN-US; mso-bidi-font-weight: bold" class="numberAndPackageDecription">MOTORCYCLE TUBES<br>HS CODE: 40139099<br>41 PACKAGE</span>
+                    <br>
+                    <span style="font-size: 7.0pt; mso-bidi-font-size: 10.0pt; line-height: 120%; font-family: monospace; mso-ansi-language: EN-US; mso-bidi-font-weight: bold" class="tciValue"></span>
+                </p>
+            </td>
+            <td style="width: 84pt; border-style: solid; border-top: none; border-bottom: none; border-left: solid windowtext 1pt; border-right: solid windowtext 1pt; border-width: 0.75pt; padding-right: 5.03pt; padding-left: 5.03pt; vertical-align: top; -aw-border: 0.5pt single">
+                <p class="MsoNormal" style="margin-top: 3.0pt; margin-right: 0in; margin-bottom: 3.0pt; margin-left: 0in; line-height: 120%; mso-pagination: widow-orphan">
+                    <span lang="EN-AU" style="font-size: 7.0pt; line-height: 120%; font-family: monospace; mso-bidi-font-weight: bold" class="grossAndQuantity">656.00 KILOGRAM<br>2,050.00 PIECE<br> </span>
+                </p>
+            </td>
+            <td style="width: 84.05pt; border-style: solid; border-top: none; border-bottom: none; border-left: solid windowtext 1pt; border-right: solid windowtext 1pt; border-width: 0.75pt; padding-right: 5.03pt; padding-left: 5.03pt; vertical-align: top; -aw-border: 0.5pt single">
+                <p class="MsoNormal" style="margin-top: 3.0pt; margin-right: 1.8pt; margin-bottom: 3.0pt; margin-left: 0in; line-height: 120%; mso-pagination: widow-orphan">
+                    <span class="numberAndDateInvoice" style="font-size: 7.0pt; line-height: 120%; font-family: monospace; mso-ansi-language: EN-US; mso-bidi-font-weight: bold">SF-250605<br>DATE: 5/06/2025</span>
+                </p>
+            </td>
+
+        </tr><tr class="borderTwo draftItem fixheight-3" id="clone" style="mso-yfti-irow: 5; page-break-inside: avoid;  border-bottom: none; ">
+            <td colspan="2" style="width: 341.9pt; border-style: solid; border-top: none; border-bottom: none; border-left: solid windowtext 1pt; border-right: solid windowtext 1pt; border-width: 0.75pt; padding-right: 5.03pt; padding-left: 5.03pt; vertical-align: top; -aw-border: 0.5pt single">
+                <p class="MsoNormal col01Height" style="overflow: hidden; margin-top: 3.0pt; margin-right: 1.8pt; margin-bottom: 0in; margin-left: 0in; margin-bottom: 6pt; line-height: 120%; mso-pagination: widow-orphan">
+                    <span style="font-size: 7.0pt; mso-bidi-font-size: 10.0pt; line-height: 120%; font-family: monospace; mso-ansi-language: EN-US; mso-bidi-font-weight: bold" class="stt">3</span>.
+                    <span style="font-size: 7.0pt; mso-bidi-font-size: 10.0pt; line-height: 120%; font-family: monospace; mso-ansi-language: EN-US; mso-bidi-font-weight: bold" class="shippingMark">CG C/NO.: 1 -840 MADE IN VIET NAM TO MSH ORDER NO.: CG-2501/1</span>
+                    <br>
+                    <span style="font-size: 7.0pt; mso-bidi-font-size: 10.0pt; line-height: 120%; font-family: monospace; mso-ansi-language: EN-US; mso-bidi-font-weight: bold" class="numberAndPackageDecription">CAR/ TRUCK FLAPS<br>HS CODE: 40169911<br>334 PACKAGE</span>
+                    <br>
+                    <span style="font-size: 7.0pt; mso-bidi-font-size: 10.0pt; line-height: 120%; font-family: monospace; mso-ansi-language: EN-US; mso-bidi-font-weight: bold" class="tciValue"></span>
+                </p>
+            </td>
+            <td style="width: 84pt; border-style: solid; border-top: none; border-bottom: none; border-left: solid windowtext 1pt; border-right: solid windowtext 1pt; border-width: 0.75pt; padding-right: 5.03pt; padding-left: 5.03pt; vertical-align: top; -aw-border: 0.5pt single">
+                <p class="MsoNormal" style="margin-top: 3.0pt; margin-right: 0in; margin-bottom: 3.0pt; margin-left: 0in; line-height: 120%; mso-pagination: widow-orphan">
+                    <span lang="EN-AU" style="font-size: 7.0pt; line-height: 120%; font-family: monospace; mso-bidi-font-weight: bold" class="grossAndQuantity">15,872.80 KILOGRAM<br>4,430.00 PIECE<br> </span>
+                </p>
+            </td>
+            <td style="width: 84.05pt; border-style: solid; border-top: none; border-bottom: none; border-left: solid windowtext 1pt; border-right: solid windowtext 1pt; border-width: 0.75pt; padding-right: 5.03pt; padding-left: 5.03pt; vertical-align: top; -aw-border: 0.5pt single">
+                <p class="MsoNormal" style="margin-top: 3.0pt; margin-right: 1.8pt; margin-bottom: 3.0pt; margin-left: 0in; line-height: 120%; mso-pagination: widow-orphan">
+                    <span class="numberAndDateInvoice" style="font-size: 7.0pt; line-height: 120%; font-family: monospace; mso-ansi-language: EN-US; mso-bidi-font-weight: bold">SF-250605<br>DATE: 5/06/2025</span>
+                </p>
+            </td>
+
+        </tr></tbody></table>
+
+    <div class="WordSection1">
+        <div align="center" id="copy" class="fixheight fixheight-1" style="height: 1075px; border: none;">
+            <table cellspacing="0" cellpadding="0" class="TableGrid" style="-aw-border-insideh:0.5pt single #000000; -aw-border-insidev:0.5pt single #000000; border-collapse:collapse">
+                <tbody><tr style="height:31.2pt; -aw-height-rule:exactly">
+                    <td rowspan="2" style="width:260.35pt; border-style:solid; border-width:0.75pt; padding-right:5.03pt; padding-left:5.03pt; vertical-align:top; -aw-border:0.5pt single">
+                        <p style="font-size:10pt"><span style="font-weight:bold">1.</span><span style="width:2.9pt; font-weight:bold; display:inline-block; -aw-tabstop-align:left; -aw-tabstop-pos:10.4pt">&nbsp;</span><span style="font-weight:bold">Goods consigned from</span><span> (Exporter’s business name, address,</span></p>
+                        <p style="font-size:10pt"><span style="width:10.4pt; display:inline-block; -aw-tabstop-align:left; -aw-tabstop-pos:10.4pt">&nbsp;</span><span>country)</span></p>
+                        <p style="font-size:10pt">
+                            <span style="font-size: 7.0pt; line-height: 120%; font-family: monospace; mso-fareast-font-family: &quot;MS Mincho&quot;; mso-ansi-language: EN-US; mso-fareast-language: JA; mso-bidi-language: TH">
+                                <span id="companyNameEnglish">SHIH FA RUBBER INDUSTRIES (VN) CO., LTD.</span>
+                                <br>
+                                <span id="companyAddress" style="white-space:initial;">BAU TRAN HAMLET, NHUAN DUC COMMUNE, CU CHI DIST.,  HOCHIMINH CITY, VIETNAM</span>
+                                <br>
+                                <span class="companyCountryName">VIET NAM</span>
+                            </span>
+                        </p>
+
+                    </td>
+                    <td colspan="3" style="width:260.4pt; border-style:solid; border-width:0.75pt; padding-right:5.03pt; padding-left:5.03pt; vertical-align:top; -aw-border:0.5pt single">
+                        <p style="font-size:10pt">
+                            <span style="font-weight:bold">Reference No.</span>&nbsp;
+                            <span id="certificateNumber">VN-IQ 25/02/002784B</span>
+                        </p>
+                    </td>
+                </tr>
+                <tr style="height:62.35pt; -aw-height-rule:exactly">
+                    <td colspan="3" rowspan="2" style="width:260.4pt; border-style:solid; border-width:0.75pt; padding-right:5.03pt; padding-left:5.03pt; vertical-align:middle; -aw-border:0.5pt single">
+                        <p style="text-align:center; font-size:16pt"><span style="font-weight:bold">CERTIFICATE OF ORIGIN</span></p>
+                        <p style="text-align:center; font-size:10pt"><span style="font-style:italic">(Combined declaration and certificate)</span></p><p style="text-align:center; font-size:18pt"><span style="font-weight:bold">FORM B</span></p>
+                        <p style="text-align:center; font-size:10pt"><span>Issued in Vietnam</span></p>
+                    </td>
+                </tr>
+                <tr style="height:11.35pt; -aw-height-rule:exactly">
+                    <td rowspan="2" style="width:260.35pt; border-style:solid; border-width:0.75pt; padding-right:5.03pt; padding-left:5.03pt; vertical-align:top; -aw-border:0.5pt single">
+                        <p style="font-size:10pt">
+                            <span style="font-weight:bold">2.</span><span style="width:2.3pt; font-weight:bold; display:inline-block; -aw-tabstop-align:left; -aw-tabstop-pos:9.8pt">&nbsp;</span>
+                            <span style="font-weight:bold">Goods consigned to</span><span> (Consignee’s name, address, country)</span>
+                        </p>
+                        <p style="font-size:10pt">
+                            <span style="font-size: 7.0pt; line-height: 120%; font-family: monospace; mso-fareast-font-family: &quot;MS Mincho&quot;; mso-ansi-language: EN-US; mso-fareast-language: JA; mso-bidi-language: TH">
+                                <span id="nameEnglishPersionImport">ALBAYDAA ALAKHDAR GENERAL TRADING COMPANY</span>
+                                <br>
+                                <span id="addressPersionImport" style="white-space:initial;">IRAQ-BAGHDAD-ALKFAH STREET TEL: +9647706299235/ 7905347239 </span>
+                                <br>
+                                <span style="text-transform: uppercase;" id="countryNameImport">IRAQ</span>
+                                <o:p></o:p>
+                            </span>
+                        </p>
+                    </td>
+                </tr>
+                <tr style="height:70.9pt; -aw-height-rule:exactly">
+                    <td colspan="3" rowspan="2" style="width:260.4pt; border-style:solid; border-width:0.75pt; padding-right:5.03pt; padding-left:5.03pt; vertical-align:top; -aw-border:0.5pt single">
+                        <p style="font-size:10pt">
+                            <span style="font-weight:bold">4.</span><span style="width:3pt; font-weight:bold; display:inline-block; -aw-tabstop-align:left; -aw-tabstop-pos:10.5pt">&nbsp;</span><span style="font-weight:bold">Competent authority</span><span> (name, address, country)</span>
+                        </p>
+                        <br>
+                        <p style="font-size: 9pt; font-family: monospace; ">
+                            <span id="departmentInfoReview1">
+                                AGENCY FOR FOREIGN TRADE <br>
+                                Address: 54 Hai Ba Trung Str., Hoan Kiem, Ha Noi, Viet Nam
+                            </span>
+                        </p>
+                    </td>
+                </tr>
+                <tr style="height:11.35pt; -aw-height-rule:exactly">
+                    <td rowspan="2" style="width:260.35pt; border-style:solid; border-width:0.75pt; padding-right:5.03pt; padding-left:5.03pt; vertical-align:top; -aw-border:0.5pt single">
+                        <p style="font-size:10pt">
+                            <span style="font-weight:bold">3.</span><span style="width:2.9pt; font-weight:bold; display:inline-block; -aw-tabstop-align:left; -aw-tabstop-pos:10.4pt">&nbsp;</span>
+                            <span style="font-weight:bold">Means of transport and route</span><span> (as far as known)</span>
+                        </p>
+                        <p style="font-size:10pt">
+                            <span style="font-size: 8.0pt; line-height: 140%; font-family: monospace; mso-fareast-font-family: &quot;MS Mincho&quot;; mso-ansi-language: EN-US; mso-fareast-language: JA">
+                                <!--FROM: <span id="senderPlace"></span>
+                                <br />-->
+                                <span id="transportMethod">BY SEA</span>
+                                <br>
+                                <span style="padding-right: 80px;">Departure Date:</span> <span id="transportDate">30/04/2025</span>
+                                <br>
+                                <span style="padding-right: 20px;">
+                                    Vessel's name/Aircraft etc.:
+                                </span><span id="shipName">CMA CGM J. ADAMS / 1TUDIS1MA</span>
+                                <br>
+                                <span style="padding-right: 3px;">
+                                    Port of Discharge:
+                                </span> <span id="receiverPlace">UMM QASR (IRAQ)</span>
+                            </span>
+                        </p>
+                    </td>
+                </tr>
+                <tr style="height:85.05pt; -aw-height-rule:exactly">
+                    <td colspan="3" style="width:260.4pt; border-style:solid; border-width:0.75pt; padding-right:5.03pt; padding-left:5.03pt; vertical-align:top; -aw-border:0.5pt single">
+                        <p style="font-size:10pt"><span style="font-weight:bold">5.</span><span style="width:3pt; font-weight:bold; display:inline-block; -aw-tabstop-align:left; -aw-tabstop-pos:10.5pt">&nbsp;</span><span style="font-weight:bold">For official use</span></p>
+                    </td>
+                </tr>
+                <tr style="height:39.35pt; -aw-height-rule:exactly">
+                    <td colspan="2" style="width:341.9pt; border-style:solid; border-bottom:none; border-width:0.75pt; padding-right:5.03pt; padding-left:5.03pt; vertical-align:top; -aw-border:0.5pt single">
+                        <p style="font-size:10pt"><span style="font-weight:bold">6.</span><span style="width:3pt; font-weight:bold; display:inline-block; -aw-tabstop-align:left; -aw-tabstop-pos:10.5pt">&nbsp;</span><span style="font-weight:bold">Marks, numbers and kind of packages; description of goods</span></p>
+                    </td>
+                    <td style="width: 84pt; border-style: solid; border-bottom: none; border-width: 0.75pt; padding-right: 5.03pt; padding-left: 5.03pt; vertical-align: top; -aw-border: 0.5pt single"><p style="font-size:10pt"><span style="font-weight:bold">7.</span><span style="width:3pt; font-weight:bold; display:inline-block; -aw-tabstop-align:left; -aw-tabstop-pos:10.5pt">&nbsp;</span><span style="font-weight:bold">Gross weight or</span></p><p style="font-size:10pt"><span style="width:10.5pt; font-weight:bold; display:inline-block; -aw-tabstop-align:left; -aw-tabstop-pos:10.5pt">&nbsp;</span><span style="font-weight:bold">other quantity</span></p></td>
+                    <td style="width: 84.05pt; border-style: solid; border-bottom: none; border-width: 0.75pt; padding-right: 5.03pt; padding-left: 5.03pt; vertical-align: top; -aw-border: 0.5pt single"><p style="font-size:10pt"><span style="font-weight:bold">8.</span><span style="width:3pt; font-weight:bold; display:inline-block; -aw-tabstop-align:left; -aw-tabstop-pos:10.5pt">&nbsp;</span><span style="font-weight:bold">Number and</span></p><p style="font-size:10pt"><span style="width:10.5pt; font-weight:bold; display:inline-block; -aw-tabstop-align:left; -aw-tabstop-pos:10.5pt">&nbsp;</span><span style="font-weight:bold">date of invoices</span></p></td>
+                </tr>
+
+                <!-- items -->
+                <tr class="borderTwo draftItem fixheight-1" id="clone" style="mso-yfti-irow: 5; page-break-inside: avoid;  border-bottom: none; ">
+            <td colspan="2" style="width: 341.9pt; border-style: solid; border-top: none; border-bottom: none; border-left: solid windowtext 1pt; border-right: solid windowtext 1pt; border-width: 0.75pt; padding-right: 5.03pt; padding-left: 5.03pt; vertical-align: top; -aw-border: 0.5pt single">
+                <p class="MsoNormal col01Height" style="overflow: hidden; margin-top: 3.0pt; margin-right: 1.8pt; margin-bottom: 0in; margin-left: 0in; margin-bottom: 6pt; line-height: 120%; mso-pagination: widow-orphan">
+                    <span style="font-size: 7.0pt; mso-bidi-font-size: 10.0pt; line-height: 120%; font-family: monospace; mso-ansi-language: EN-US; mso-bidi-font-weight: bold" class="stt">1</span>.
+                    <span style="font-size: 7.0pt; mso-bidi-font-size: 10.0pt; line-height: 120%; font-family: monospace; mso-ansi-language: EN-US; mso-bidi-font-weight: bold" class="shippingMark">CG C/NO.: 1 -840 MADE IN VIET NAM TO MSH ORDER NO.: CG-2501/1</span>
+                    <br>
+                    <span style="font-size: 7.0pt; mso-bidi-font-size: 10.0pt; line-height: 120%; font-family: monospace; mso-ansi-language: EN-US; mso-bidi-font-weight: bold" class="numberAndPackageDecription">CAR/ TRUCK TUBES<br>HS CODE: 40131029<br>465 PACKAGE</span>
+                    <br>
+                    <span style="font-size: 7.0pt; mso-bidi-font-size: 10.0pt; line-height: 120%; font-family: monospace; mso-ansi-language: EN-US; mso-bidi-font-weight: bold" class="tciValue"></span>
+                </p>
+            </td>
+            <td style="width: 84pt; border-style: solid; border-top: none; border-bottom: none; border-left: solid windowtext 1pt; border-right: solid windowtext 1pt; border-width: 0.75pt; padding-right: 5.03pt; padding-left: 5.03pt; vertical-align: top; -aw-border: 0.5pt single">
+                <p class="MsoNormal" style="margin-top: 3.0pt; margin-right: 0in; margin-bottom: 3.0pt; margin-left: 0in; line-height: 120%; mso-pagination: widow-orphan">
+                    <span lang="EN-AU" style="font-size: 7.0pt; line-height: 120%; font-family: monospace; mso-bidi-font-weight: bold" class="grossAndQuantity">11,400.50 KILOGRAM<br>7,800.00 PIECE<br> </span>
+                </p>
+            </td>
+            <td style="width: 84.05pt; border-style: solid; border-top: none; border-bottom: none; border-left: solid windowtext 1pt; border-right: solid windowtext 1pt; border-width: 0.75pt; padding-right: 5.03pt; padding-left: 5.03pt; vertical-align: top; -aw-border: 0.5pt single">
+                <p class="MsoNormal" style="margin-top: 3.0pt; margin-right: 1.8pt; margin-bottom: 3.0pt; margin-left: 0in; line-height: 120%; mso-pagination: widow-orphan">
+                    <span class="numberAndDateInvoice" style="font-size: 7.0pt; line-height: 120%; font-family: monospace; mso-ansi-language: EN-US; mso-bidi-font-weight: bold">SF-250605<br>DATE: 5/06/2025</span>
+                </p>
+            </td>
+
+        </tr><tr class="borderTwo draftItem fixheight-2" id="clone" style="mso-yfti-irow: 5; page-break-inside: avoid;  border-bottom: none; ">
+            <td colspan="2" style="width: 341.9pt; border-style: solid; border-top: none; border-bottom: none; border-left: solid windowtext 1pt; border-right: solid windowtext 1pt; border-width: 0.75pt; padding-right: 5.03pt; padding-left: 5.03pt; vertical-align: top; -aw-border: 0.5pt single">
+                <p class="MsoNormal col01Height" style="overflow: hidden; margin-top: 3.0pt; margin-right: 1.8pt; margin-bottom: 0in; margin-left: 0in; margin-bottom: 6pt; line-height: 120%; mso-pagination: widow-orphan">
+                    <span style="font-size: 7.0pt; mso-bidi-font-size: 10.0pt; line-height: 120%; font-family: monospace; mso-ansi-language: EN-US; mso-bidi-font-weight: bold" class="stt">2</span>.
+                    <span style="font-size: 7.0pt; mso-bidi-font-size: 10.0pt; line-height: 120%; font-family: monospace; mso-ansi-language: EN-US; mso-bidi-font-weight: bold" class="shippingMark">CG C/NO.: 1 -840 MADE IN VIET NAM TO MSH ORDER NO.: CG-2501/1</span>
+                    <br>
+                    <span style="font-size: 7.0pt; mso-bidi-font-size: 10.0pt; line-height: 120%; font-family: monospace; mso-ansi-language: EN-US; mso-bidi-font-weight: bold" class="numberAndPackageDecription">MOTORCYCLE TUBES<br>HS CODE: 40139099<br>41 PACKAGE</span>
+                    <br>
+                    <span style="font-size: 7.0pt; mso-bidi-font-size: 10.0pt; line-height: 120%; font-family: monospace; mso-ansi-language: EN-US; mso-bidi-font-weight: bold" class="tciValue"></span>
+                </p>
+            </td>
+            <td style="width: 84pt; border-style: solid; border-top: none; border-bottom: none; border-left: solid windowtext 1pt; border-right: solid windowtext 1pt; border-width: 0.75pt; padding-right: 5.03pt; padding-left: 5.03pt; vertical-align: top; -aw-border: 0.5pt single">
+                <p class="MsoNormal" style="margin-top: 3.0pt; margin-right: 0in; margin-bottom: 3.0pt; margin-left: 0in; line-height: 120%; mso-pagination: widow-orphan">
+                    <span lang="EN-AU" style="font-size: 7.0pt; line-height: 120%; font-family: monospace; mso-bidi-font-weight: bold" class="grossAndQuantity">656.00 KILOGRAM<br>2,050.00 PIECE<br> </span>
+                </p>
+            </td>
+            <td style="width: 84.05pt; border-style: solid; border-top: none; border-bottom: none; border-left: solid windowtext 1pt; border-right: solid windowtext 1pt; border-width: 0.75pt; padding-right: 5.03pt; padding-left: 5.03pt; vertical-align: top; -aw-border: 0.5pt single">
+                <p class="MsoNormal" style="margin-top: 3.0pt; margin-right: 1.8pt; margin-bottom: 3.0pt; margin-left: 0in; line-height: 120%; mso-pagination: widow-orphan">
+                    <span class="numberAndDateInvoice" style="font-size: 7.0pt; line-height: 120%; font-family: monospace; mso-ansi-language: EN-US; mso-bidi-font-weight: bold">SF-250605<br>DATE: 5/06/2025</span>
+                </p>
+            </td>
+
+        </tr><tr class="borderTwo draftItem fixheight-3" id="clone" style="mso-yfti-irow: 5; page-break-inside: avoid;  border-bottom: none; ">
+            <td colspan="2" style="width: 341.9pt; border-style: solid; border-top: none; border-bottom: none; border-left: solid windowtext 1pt; border-right: solid windowtext 1pt; border-width: 0.75pt; padding-right: 5.03pt; padding-left: 5.03pt; vertical-align: top; -aw-border: 0.5pt single">
+                <p class="MsoNormal col01Height" style="overflow: hidden; margin: 3pt 1.8pt 6pt 0in; line-height: 120%; height: 206px;">
+                    <span style="font-size: 7.0pt; mso-bidi-font-size: 10.0pt; line-height: 120%; font-family: monospace; mso-ansi-language: EN-US; mso-bidi-font-weight: bold" class="stt">3</span>.
+                    <span style="font-size: 7.0pt; mso-bidi-font-size: 10.0pt; line-height: 120%; font-family: monospace; mso-ansi-language: EN-US; mso-bidi-font-weight: bold" class="shippingMark">CG C/NO.: 1 -840 MADE IN VIET NAM TO MSH ORDER NO.: CG-2501/1</span>
+                    <br>
+                    <span style="font-size: 7.0pt; mso-bidi-font-size: 10.0pt; line-height: 120%; font-family: monospace; mso-ansi-language: EN-US; mso-bidi-font-weight: bold" class="numberAndPackageDecription">CAR/ TRUCK FLAPS<br>HS CODE: 40169911<br>334 PACKAGE</span>
+                    <br>
+                    <span style="font-size: 7.0pt; mso-bidi-font-size: 10.0pt; line-height: 120%; font-family: monospace; mso-ansi-language: EN-US; mso-bidi-font-weight: bold" class="tciValue"></span>
+                </p>
+            </td>
+            <td style="width: 84pt; border-style: solid; border-top: none; border-bottom: none; border-left: solid windowtext 1pt; border-right: solid windowtext 1pt; border-width: 0.75pt; padding-right: 5.03pt; padding-left: 5.03pt; vertical-align: top; -aw-border: 0.5pt single">
+                <p class="MsoNormal" style="margin-top: 3.0pt; margin-right: 0in; margin-bottom: 3.0pt; margin-left: 0in; line-height: 120%; mso-pagination: widow-orphan">
+                    <span lang="EN-AU" style="font-size: 7.0pt; line-height: 120%; font-family: monospace; mso-bidi-font-weight: bold" class="grossAndQuantity">15,872.80 KILOGRAM<br>4,430.00 PIECE<br> </span>
+                </p>
+            </td>
+            <td style="width: 84.05pt; border-style: solid; border-top: none; border-bottom: none; border-left: solid windowtext 1pt; border-right: solid windowtext 1pt; border-width: 0.75pt; padding-right: 5.03pt; padding-left: 5.03pt; vertical-align: top; -aw-border: 0.5pt single">
+                <p class="MsoNormal" style="margin-top: 3.0pt; margin-right: 1.8pt; margin-bottom: 3.0pt; margin-left: 0in; line-height: 120%; mso-pagination: widow-orphan">
+                    <span class="numberAndDateInvoice" style="font-size: 7.0pt; line-height: 120%; font-family: monospace; mso-ansi-language: EN-US; mso-bidi-font-weight: bold">SF-250605<br>DATE: 5/06/2025</span>
+                </p>
+            </td>
+
+        </tr><tr class="Items" style="display: none;">
+                    <td colspan="2" style="width:341.9pt; border-style:solid; border-width:0.75pt; padding-right:5.03pt; padding-left:5.03pt; vertical-align:top; -aw-border:0.5pt single">
+                        <p class="MsoNormal col01Height" style="overflow:hidden; margin-top: 3.0pt; margin-right: 1.8pt; margin-bottom: 0in; margin-left: 0in; margin-bottom: .0001pt; line-height: 100%; mso-pagination: widow-orphan">
+                            &nbsp;
+                        </p>
+                    </td>
+                    <td style="width:84pt; border-style:solid; border-width:0.75pt; padding-right:5.03pt; padding-left:5.03pt; vertical-align:top; -aw-border:0.5pt single">
+                        <p class="MsoNormal" style="margin-top: 3.0pt; margin-right: 0in; margin-bottom: 3.0pt; margin-left: 0in; line-height: 100%; mso-pagination: widow-orphan">
+                            &nbsp;
+                        </p>
+                    </td>
+                    <td style="width:84.05pt; border-style:solid; border-width:0.75pt; padding-right:5.03pt; padding-left:5.03pt; vertical-align:top; -aw-border:0.5pt single">
+                        <p class="MsoNormal" style="margin-top: 3.0pt; margin-right: 1.8pt; margin-bottom: 3.0pt; margin-left: 0in; line-height: 100%; mso-pagination: widow-orphan">
+                            &nbsp;
+                        </p>
+                    </td>
+                </tr>
+
+                <!-- End items -->
+                <tr style="height:153.1pt; -aw-height-rule:exactly">
+                    <td style="width:260.35pt; border-style:solid; border-width:0.75pt; padding-right:5.03pt; padding-left:5.03pt; vertical-align:top; -aw-border:0.5pt single">
+                        <p style="font-size:10pt"><span style="font-weight:bold">9.</span><span style="width:3pt; font-weight:bold; display:inline-block; -aw-tabstop-align:left; -aw-tabstop-pos:10.5pt">&nbsp;</span><span style="font-weight:bold">Certification</span></p>
+                        <p style="margin-left:10.5pt; font-size:10pt"><span>It is hereby certified, on the basis of control carried out, that the declaration by the exporter is correct.</span></p><p style="margin-top:6pt; margin-left:10.5pt; font-size:10pt"><span style="-aw-import:ignore">&nbsp;</span></p><p style="margin-left:10.5pt; font-size:10pt"><span style="-aw-import:ignore">&nbsp;</span></p>
+                        <br>
+                        <div>
+                            <div class="MsoBodyText" style="text-align:center; width:58%;float:left;padding-top: 15px;">
+                                <img id="linkStamp" src="./Certificate Form B, Certificate No_ VN-IQ 25_02_002784B_files/xnkphonghcm-tranngocbinh25.jpg" width="100%">
+                            </div>
+                            <div class="qrcode" style="text-align: center; width:40%;float:left;">
+                                <img id="linkQRCode" src="./Certificate Form B, Certificate No_ VN-IQ 25_02_002784B_files/barcode-qrcode-aHR0cHM6Ly9lY29zeXMuZ292LnZuL1ByaW50Q08vc2hGb3JtMjIuaHRtbD9Eb2NJZD0xNDI5MzU5MCZDZXJ0aWZpY2F0ZU51bWJl.png">
+                            </div>
+                        </div>
+
+                        <br style="clear:both;">
+                        <p style="margin-left:10.5pt; font-size:10pt"><span style=" font-family: monospace ;-aw-import:ignore;" id="reviewInfo">HO CHI MINH CITY, 13/05/2025</span></p>
+                        <p style="margin-left:10.5pt; font-size:10pt"><span style="height:0pt; display:block; position:absolute; z-index:1"><img src="./Certificate Form B, Certificate No_ VN-IQ 25_02_002784B_files/Aspose.Words.73d30a86-e9d5-4e9c-9070-f555de6ae0f0.001.png" width="284" height="2" alt="" style="margin-top:5.96pt; margin-left:4.74pt; -aw-left-pos:15.24pt; -aw-rel-hpos:column; -aw-rel-vpos:paragraph; -aw-top-pos:5.96pt; -aw-wrap-type:none; position:absolute"></span><span style="-aw-import:ignore">&nbsp;</span></p><p style="margin-left:10.5pt; font-size:9pt"><span style="font-style:italic">(Place and date, signature and stamp of certifying authority)</span></p>
+                    </td>
+                    <td colspan="3" style="width:260.4pt; border-style:solid; border-width:0.75pt; padding-right:5.03pt; padding-left:5.03pt; vertical-align:top; -aw-border:0.5pt single">
+                        <p style="font-size:10pt"><span style="font-weight:bold">10.</span><span style="width:3.65pt; font-weight:bold; display:inline-block; -aw-tabstop-align:left; -aw-tabstop-pos:16.15pt">&nbsp;</span><span style="font-weight:bold">Declaration by the exporter</span></p>
+                        <p style="margin-left:16.15pt; font-size:10pt"><span>The undersigned hereby declares that the above details and statements are correct; that all the goods were produced in</span></p>
+                        <p style="margin-left:16.15pt; font-size:10pt"><span>Vietnam and that they comply with the origin requirements specified for goods exported to</span></p>
+                        <p style="margin-left:100.15pt; text-align:center; font-size:10pt"><span id="countryNameImport02" style="font-family:monospace; font-size: 8pt; text-transform: uppercase;">IRAQ</span></p>
+                        <p style="margin-left:16.15pt; text-align:center; font-size:10pt"><span style="height:0pt; text-align:left; display:block; position:absolute; z-index:0"><img src="./Certificate Form B, Certificate No_ VN-IQ 25_02_002784B_files/Aspose.Words.73d30a86-e9d5-4e9c-9070-f555de6ae0f0.002.png" width="90" height="2" alt="" style="margin-top:6.34pt; margin-left:135.17pt; -aw-left-pos:151.32pt; -aw-rel-hpos:column; -aw-rel-vpos:paragraph; -aw-top-pos:6.34pt; -aw-wrap-type:none; position:absolute"></span><span style="-aw-import:ignore">&nbsp;</span></p>
+                        <p style="margin-left:16.15pt; text-align:center; font-size:9pt"><span style="font-style:italic; -aw-import:spaces">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="font-style:italic">(importing country)</span></p>
+                        <p style="margin-left:16.15pt; font-size:10pt"><span style="-aw-import:ignore">&nbsp;</span></p>
+                        <p style="margin-left:16.15pt; font-size:10pt"><span style="-aw-import:ignore">&nbsp;</span></p>
+                        <p style="margin-left:16.15pt; font-size:10pt"><span style="-aw-import:ignore">&nbsp;</span></p>
+                        <p style="margin-left:16.15pt; font-size:10pt"><span style="-aw-import:ignore">&nbsp;</span></p>
+                        <p style="margin-left:16.15pt; font-size:10pt"><span style="-aw-import:ignore">&nbsp;</span></p>
+                        <p style="margin-left:16.15pt; font-size:10pt"><span style="-aw-import:ignore">&nbsp;</span></p>
+                        <p style="margin-left:16.15pt; font-size:10pt"><span style="-aw-import:ignore">&nbsp;</span></p>
+                        <p style="margin-left:16.15pt; font-size:10pt"><span style=" font-family: monospace ;-aw-import:ignore;" id="submitInfo">HO CHI MINH CITY, 09/05/2025</span></p>
+                        <p style="font-size:9pt"><span style="height:0pt; display:block; position:absolute; z-index:2"><img src="./Certificate Form B, Certificate No_ VN-IQ 25_02_002784B_files/Aspose.Words.73d30a86-e9d5-4e9c-9070-f555de6ae0f0.003.png" width="242" height="2" alt="" style="margin-top:7.61pt; margin-left:18.26pt; -aw-left-pos:18.26pt; -aw-rel-hpos:column; -aw-rel-vpos:paragraph; -aw-top-pos:7.61pt; -aw-wrap-type:none; position:absolute"></span><span style="font-style:italic; -aw-import:ignore">&nbsp;</span></p>
+                        <p style="margin-left:16.15pt; font-size:9pt"><span style="font-style:italic">(Place and date, signature of authorised signatory)</span></p>
+                    </td>
+                </tr>
+
+            </tbody></table>
+            <div style="text-align: right; font-size: 7.0pt; width: 521.45pt;">Page <span class="pageCur">1</span> / <span class="totalpage">1</span></div>
+        </div>
+    </div>
+
+</body></html>
